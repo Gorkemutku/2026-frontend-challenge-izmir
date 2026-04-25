@@ -32,8 +32,8 @@ export const sightings = [
     id: "s2",
     formType: "sighting",
     timestamp: "2026-04-25T15:30:00+03:00",
-    witnessName: "Elif Kaya",
-    witnessId: "w2",
+    witnessName: "Ayca",  // kasıtlı typo — doğrusu Ayça
+    witnessId: "w6",
     locationId: "loc3",
     locationName: "Kafeterya",
     coordinates: { lat: 38.4195, lng: 27.1290 },
@@ -148,7 +148,7 @@ export const evidence = [
     id: "e2",
     formType: "evidence",
     timestamp: "2026-04-25T16:00:00+03:00",
-    foundBy: "Zeynep Aydın",
+    foundBy: "Ayça",  // doğru yazım — s2'deki Ayca ile aynı kişi
     locationId: "loc3",
     locationName: "Kafeterya",
     coordinates: { lat: 38.4195, lng: 27.1290 },
@@ -223,15 +223,15 @@ export const messages = [
     id: "m3",
     formType: "message",
     timestamp: "2026-04-25T18:30:00+03:00",
-    senderName: "Elif Kaya",
-    senderId: "w2",
-    recipientName: "Alicann",  // kasıtlı typo
+    senderName: "Ayca",  // kasıtlı typo — doğrusu Ayça
+    senderId: "w6",
+    recipientName: "Alicann",  // kasıtlı typo — doğrusu Alican
     recipientId: "w1",
     locationId: "loc6",
     locationName: "Çatı Terası",
     coordinates: { lat: 38.4194, lng: 27.1291 },
     messageType: "SMS",
-    description: "Elif, Alican'a 'Podo'yu çatıda gördüm sanki, gel kontrol edelim' yazmış.",
+    description: "Ayça, Alican'a 'Podo'yu çatıda gördüm sanki, gel kontrol edelim' yazmış.",
     status: "İnceleniyor",
     confidence: "medium",
   },
@@ -274,13 +274,13 @@ export const tips = [
     id: "t2",
     formType: "tip",
     timestamp: "2026-04-25T17:00:00+03:00",
-    tipsterName: "Zeynep Aydın",
-    tipsterId: "w4",
+    tipsterName: "Ayca",  // kasıtlı typo — doğrusu Ayça
+    tipsterId: "w6",
     locationId: "loc3",
     locationName: "Kafeterya",
     coordinates: { lat: 38.4195, lng: 27.1290 },
     tipType: "Yüz Yüze Bildirim",
-    description: "Zeynep, Podo'nun kafeteryada tanımadığı biriyle konuştuğunu söyledi.",
+    description: "Ayça, Podo'nun kafeteryada tanımadığı biriyle konuştuğunu söyledi.",
     status: "İnceleniyor",
     confidence: "high",
   },
@@ -330,13 +330,18 @@ export const locationRegistry = {
 export const personRegistry = {
   w1: { 
     canonicalName: "Alican", 
-    aliases: ["Alicann", "alican", "Alıcan"], // bilinen yazım varyasyonları
+    aliases: ["Alicann", "alican", "Alıcan", "ALİCAN"], // bilinen yazım varyasyonları
     role: "Çalışan",
   },
   w2: { canonicalName: "Elif Kaya", aliases: ["elif kaya", "Elif"], role: "Çalışan" },
   w3: { canonicalName: "Mehmet Demir", aliases: ["mehmet demir", "Mehmet"], role: "Güvenlik" },
-  w4: { canonicalName: "Zeynep Aydın", aliases: ["zeynep aydın", "Zeynep"], role: "Çalışan" },
-  w5: { canonicalName: "Emre Çelik", aliases: ["emre çelik", "Emre"], role: "Teknisyen" },
+  w4: { canonicalName: "Zeynep Aydın", aliases: ["zeynep aydın", "Zeynep", "Zeynep Aydin"], role: "Çalışan" },
+  w5: { canonicalName: "Emre Çelik", aliases: ["emre çelik", "Emre", "Emre Celik"], role: "Teknisyen" },
+  w6: {
+    canonicalName: "Ayça",
+    aliases: ["Ayca", "ayça", "ayca", "AYÇA", "AYCA"], // Türkçe karakter varyasyonları
+    role: "Çalışan",
+  },
   podo: { canonicalName: "Podo", aliases: ["podo", "PODO"], role: "Maskot 🐾" },
   unknown1: { canonicalName: "Bilinmeyen Kişi", aliases: ["bilinmeyen"], role: "Şüpheli" },
   anon1: { canonicalName: "Anonim İhbarcı #1", aliases: [], role: "İhbarcı" },
