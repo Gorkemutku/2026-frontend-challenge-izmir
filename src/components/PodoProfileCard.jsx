@@ -4,7 +4,7 @@ import podoAvatar from '../assets/podo-avatar.png';
 const PodoProfileCard = ({ stats }) => {
   const timeSinceLastSeen = useMemo(() => {
     if (!stats?.lastSighting?._parsedTime) return null;
-    const diff = Date.now() - stats.lastSighting._parsedTime.getTime();
+    const diff = Math.abs(Date.now() - stats.lastSighting._parsedTime.getTime());
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(minutes / 60);
     if (hours > 0) return `${hours} saat ${minutes % 60} dk önce`;
