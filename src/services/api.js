@@ -20,7 +20,7 @@ const fetchFromJotform = async (formType, signal) => {
   
   try {
     const res = await fetch(
-      `https://api.jotform.com/form/${form.id}/submissions?apiKey=${form.key}`,
+      `https://api.jotform.com/form/${form.id}/submissions?apiKey=${form.key}&limit=1000`,
       { signal }
     );
     const data = await res.json();
@@ -113,6 +113,20 @@ export const mapJotformSubmission = (submission, formType) => {
     }
   }
 
+  // Konum adından benzersiz ID üretme (Harita gruplaması için)
+  if (mapped.locationName) {
+    mapped.locationId = mapped.locationName
+      .toLowerCase()
+      .replace(/ı/g, 'i')
+      .replace(/ö/g, 'o')
+      .replace(/ü/g, 'u')
+      .replace(/ş/g, 's')
+      .replace(/ğ/g, 'g')
+      .replace(/ç/g, 'c')
+      .replace(/[^a-z0-9]/g, '_')
+      .replace(/_+/g, '_');
+  }
+
   // Koordinat Parse Etme ("38.4361,27.1436" -> {lat, lng})
   if (mapped.rawCoordinates) {
     const parts = mapped.rawCoordinates.split(',');
@@ -124,9 +138,9 @@ export const mapJotformSubmission = (submission, formType) => {
   
   // Görüşler formundaki seenWith alanını description'a ekle
   if (mapped.seenWith && mapped.description) {
-    mapped.description += ` (Yanında görülen kişi: ${mapped.seenWith})`;
+    mapped.description += ` (Yanında: ${mapped.seenWith})`;
   } else if (mapped.seenWith) {
-    mapped.description = `Yanında görülen kişi: ${mapped.seenWith}`;
+    mapped.description = `Yanında: ${mapped.seenWith}`;
   }
 
   // Tarih Parse Etme ("14-05-2026 18:07" -> ISO Format)
@@ -153,5 +167,8 @@ export const mapJotformSubmission = (submission, formType) => {
   return mapped;
 };
 
-export const mapJotformSubmissions = (submissions, formType) =>
-  (submissions || []).map((sub) => mapJotformSubmission(sub, formType));
+export const mapJotformSubmissions = (submissions, formType) => {
+  return (submissions || [])
+    .map((sub) => mapJotformSubmission(sub, formType))
+    .filter(clue => clue.description || clue.locationName || clue.timestamp);
+};

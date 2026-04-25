@@ -1,13 +1,18 @@
-import { locationRegistry } from '../data/mockData.js';
-
 const ClueMap = ({ clues, onLocationFilter, activeLocationId }) => {
-  // Konumlardaki ipucu sayılarını hesapla
   const locationClueCounts = {};
   const locationStatuses = {};
+  const dynamicLocations = {};
 
   for (const clue of (clues || [])) {
     if (!clue.locationId) continue;
     locationClueCounts[clue.locationId] = (locationClueCounts[clue.locationId] || 0) + 1;
+
+    if (!dynamicLocations[clue.locationId]) {
+      dynamicLocations[clue.locationId] = {
+        name: clue.locationName || clue.locationId,
+        floor: 0,
+      };
+    }
 
     // En yüksek öncelikli statusü tut
     if (!locationStatuses[clue.locationId] || clue.status === 'Kritik') {
@@ -35,7 +40,7 @@ const ClueMap = ({ clues, onLocationFilter, activeLocationId }) => {
       </h3>
 
       <div className="map-grid">
-        {Object.entries(locationRegistry).map(([locId, loc]) => {
+        {Object.entries(dynamicLocations).map(([locId, loc]) => {
           const count = locationClueCounts[locId] || 0;
           const status = locationStatuses[locId];
           const isActive = activeLocationId === locId;
@@ -59,11 +64,8 @@ const ClueMap = ({ clues, onLocationFilter, activeLocationId }) => {
                 />
               )}
 
-              {/* Kat bilgisi */}
-              <span className="map-floor">{loc.floor >= 0 ? `K${loc.floor}` : `B${Math.abs(loc.floor)}`}</span>
-
               {/* İsim */}
-              <span className="map-name">{loc.name.split('—')[0].trim()}</span>
+              <span className="map-name" style={{ marginTop: '8px' }}>{loc.name.split('—')[0].trim()}</span>
 
               {/* İpucu sayısı */}
               {hasClues && (
