@@ -1,57 +1,46 @@
 /**
  * Podo Detective Panel — API Service Layer
  * 
- * Mock data ile çalışır, gerçek Jotform API'lerine kolayca geçiş yapılabilir.
- * Her fonksiyon simülasyonlu network delay içerir.
- * AbortController desteği vardır.
+ * Gerçek Jotform API entegrasyonu.
  */
 
-import { sightings, locations, evidence, messages, tips } from '../data/mockData.js';
-
-// ─── Simülasyonlu Network Delay ───────────────────────────────
-const simulateDelay = (ms = 400) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
-
-// ─── Abort-safe fetch wrapper ─────────────────────────────────
-const fetchWithAbort = async (data, signal, delayMs = 400) => {
-  await simulateDelay(delayMs);
-  if (signal?.aborted) {
-    throw new DOMException('Aborted', 'AbortError');
-  }
-  return structuredClone(data);
+// Form konfigürasyonları
+const FORMS = {
+  location: { id: '261134527667966', key: 'b119f8e8fd7fe6fbdb3aa032cef23299' }, // Girişler
+  message:  { id: '261133651963962', key: 'd129baeb6efa832415911485ef5d6dc1' }, // Mesajlar
+  sighting: { id: '261133720555956', key: '5bea83dbf561ba3190f27373831ac2a7' }, // Görüşler
+  evidence: { id: '261134449238963', key: 'c3beedaed8344260d609b35b6437c604' }, // Kişisel Notlar
+  tip:      { id: '261134430330946', key: '6de24ff899b00a30e23431f89aee9e9d' }, // Anonim İpuçları
 };
 
-// ─── Individual Form Fetchers ─────────────────────────────────
+// ─── API İSTEK FONKSİYONU ─────────────────────────────────
+const fetchFromJotform = async (formType, signal) => {
+  const form = FORMS[formType];
+  if (!form) return [];
+  
+  try {
+    const res = await fetch(
+      `https://api.jotform.com/form/${form.id}/submissions?apiKey=${form.key}`,
+      { signal }
+    );
+    const data = await res.json();
+    return mapJotformSubmissions(data.content || [], formType);
+  } catch (error) {
+    if (error.name !== 'AbortError') {
+      console.error(`Error fetching ${formType}:`, error);
+    }
+    throw error;
+  }
+};
 
-/** Form 1: Görgü tanığı raporları */
-export const fetchSightings = (signal) =>
-  fetchWithAbort(sightings, signal, 300);
+export const fetchLocations = (signal) => fetchFromJotform('location', signal);
+export const fetchMessages = (signal) => fetchFromJotform('message', signal);
+export const fetchSightings = (signal) => fetchFromJotform('sighting', signal);
+export const fetchEvidence = (signal) => fetchFromJotform('evidence', signal);
+export const fetchTips = (signal) => fetchFromJotform('tip', signal);
 
-/** Form 2: Konum kayıtları (check-in'ler) */
-export const fetchLocations = (signal) =>
-  fetchWithAbort(locations, signal, 350);
-
-/** Form 3: Kanıt dosyası */
-export const fetchEvidence = (signal) =>
-  fetchWithAbort(evidence, signal, 400);
-
-/** Form 4: İletişim kayıtları */
-export const fetchMessages = (signal) =>
-  fetchWithAbort(messages, signal, 320);
-
-/** Form 5: İhbar hattı */
-export const fetchTips = (signal) =>
-  fetchWithAbort(tips, signal, 380);
-
-// ─── Aggregate Fetcher ────────────────────────────────────────
-
-/**
- * Tüm 5 formu paralel olarak çeker ve birleştirir.
- * @param {AbortSignal} signal — İptal sinyali
- * @returns {Promise<Array>} — Tüm ipuçları tek dizide
- */
 export const fetchAllClues = async (signal) => {
-  const [s, l, e, m, t] = await Promise.all([
+  const results = await Promise.all([
     fetchSightings(signal),
     fetchLocations(signal),
     fetchEvidence(signal),
@@ -59,80 +48,50 @@ export const fetchAllClues = async (signal) => {
     fetchTips(signal),
   ]);
 
-  return [...s, ...l, ...e, ...m, ...t];
+  return results.flat();
 };
 
 // ═══════════════════════════════════════════════════════════════
 // JOTFORM API FIELD MAPPING
 // ═══════════════════════════════════════════════════════════════
-//
-// Jotform submissions verisini temiz modele dönüştürür.
-// Jotform ham veri formatı:
-//   submission.answers = {
-//     "1": { name: "fullname", answer: "Alican", ... },
-//     "4": { name: "message",  answer: "Podo'yu gördüm", ... }
-//   }
-// Bu helper, q1_fullname → name, q4_message → description şeklinde eşler.
 
-/**
- * Her form tipi için Jotform alan adı → bizim model eşlemesi.
- * key = Jotform'daki "name" alanı, value = bizim modeldeki alan adı.
- */
 const FORM_FIELD_MAPS = {
   sighting: {
-    fullname:    'witnessName',
+    personname:  'witnessName',
     location:    'locationName',
-    datetime:    'timestamp',
-    textarea:    'description',
-    mood:        'podoMood',
-    confidence:  'confidence',
+    timestamp:   'timestamp',
+    note:        'description',
+    coordinates: 'rawCoordinates',
+    seenwith:    'seenWith', 
   },
   location: {
-    sensor:      'sensorType',
-    checkinby:   'checkInBy',
+    fullname:    'checkInBy',
     location:    'locationName',
-    datetime:    'timestamp',
-    textarea:    'description',
-    confidence:  'confidence',
+    timestamp:   'timestamp',
+    note:        'description',
+    coordinates: 'rawCoordinates',
   },
   evidence: {
     fullname:    'foundBy',
-    location:    'locationName',
-    datetime:    'timestamp',
-    textarea:    'description',
-    evidencetype:'evidenceType',
-    confidence:  'confidence',
+    timestamp:   'timestamp',
+    note:        'description',
   },
   message: {
-    sender:      'senderName',
-    recipient:   'recipientName',
-    location:    'locationName',
-    datetime:    'timestamp',
-    textarea:    'description',
-    messagetype: 'messageType',
-    confidence:  'confidence',
+    from:        'senderName',
+    to:          'recipientName',
+    message:     'description',
+    timestamp:   'timestamp',
   },
   tip: {
-    fullname:    'tipsterName',
+    suspectname: 'tipsterName',
     location:    'locationName',
-    datetime:    'timestamp',
-    textarea:    'description',
-    tiptype:     'tipType',
+    timestamp:   'timestamp',
+    tip:         'description',
+    coordinates: 'rawCoordinates',
     confidence:  'confidence',
   },
 };
 
-/**
- * Tek bir Jotform submission'ı temiz veri modeline dönüştürür.
- * 
- * @param {Object} submission — Jotform submission objesi
- * @param {string} formType — 'sighting' | 'location' | 'evidence' | 'message' | 'tip'
- * @returns {Object} — Normalize edilmiş veri
- * 
- * Jotform answers yapısı:
- *   answers[questionId].name  → alan adı (ör: "fullname")
- *   answers[questionId].answer → değer (ör: "Alican")
- */
 export const mapJotformSubmission = (submission, formType) => {
   const fieldMap = FORM_FIELD_MAPS[formType] || {};
   const mapped = {
@@ -145,8 +104,6 @@ export const mapJotformSubmission = (submission, formType) => {
   // answers objesi içindeki her soruyu gez
   if (submission.answers) {
     for (const [, question] of Object.entries(submission.answers)) {
-      // question.name → "fullname", "q1_fullname" vb.
-      // Prefix'i temizle: "q1_fullname" → "fullname"
       const rawName = (question.name || '').replace(/^q\d+_/, '').toLowerCase();
       const targetField = fieldMap[rawName];
 
@@ -156,49 +113,45 @@ export const mapJotformSubmission = (submission, formType) => {
     }
   }
 
-  // Fallback: created_at → timestamp
+  // Koordinat Parse Etme ("38.4361,27.1436" -> {lat, lng})
+  if (mapped.rawCoordinates) {
+    const parts = mapped.rawCoordinates.split(',');
+    if (parts.length === 2) {
+      mapped.coordinates = { lat: parseFloat(parts[0]), lng: parseFloat(parts[1]) };
+    }
+    delete mapped.rawCoordinates;
+  }
+  
+  // Görüşler formundaki seenWith alanını description'a ekle
+  if (mapped.seenWith && mapped.description) {
+    mapped.description += ` (Yanında görülen kişi: ${mapped.seenWith})`;
+  } else if (mapped.seenWith) {
+    mapped.description = `Yanında görülen kişi: ${mapped.seenWith}`;
+  }
+
+  // Tarih Parse Etme ("14-05-2026 18:07" -> ISO Format)
+  if (mapped.timestamp && typeof mapped.timestamp === 'string' && mapped.timestamp.includes('-')) {
+    const [datePart, timePart] = mapped.timestamp.split(' ');
+    if (datePart && timePart) {
+      const [dd, mm, yyyy] = datePart.split('-');
+      if (dd && mm && yyyy) {
+        mapped.timestamp = `${yyyy}-${mm}-${dd}T${timePart}:00+03:00`;
+      }
+    }
+  }
+
+  // Fallback: created_at -> timestamp
   if (!mapped.timestamp && submission.created_at) {
     mapped.timestamp = submission.created_at;
   }
+  
+  // Status ataması (hackathon demo için rastgele veya form tipine göre de verilebilir)
+  if (formType === 'tip') mapped.status = 'Kritik';
+  else if (formType === 'sighting') mapped.status = 'İnceleniyor';
+  else if (formType === 'message') mapped.status = 'Çözüldü';
 
   return mapped;
 };
 
-/**
- * Birden fazla Jotform submission'ı toplu dönüştürür.
- * 
- * @param {Array} submissions — Jotform submissions dizisi (data.content)
- * @param {string} formType
- * @returns {Array}
- */
 export const mapJotformSubmissions = (submissions, formType) =>
   (submissions || []).map((sub) => mapJotformSubmission(sub, formType));
-
-// ─── Gerçek API'ye Geçiş ─────────────────────────────────────
-/*
-  Gerçek Jotform API ile çalışmak için:
-
-  1. .env → VITE_JOTFORM_API_KEY=your_key
-
-  2. Fetch fonksiyonlarını değiştirin:
-
-     const API_KEY = import.meta.env.VITE_JOTFORM_API_KEY;
-     const FORM_IDS = {
-       sighting: 'FORM_ID_1',
-       location: 'FORM_ID_2',
-       evidence: 'FORM_ID_3',
-       message:  'FORM_ID_4',
-       tip:      'FORM_ID_5',
-     };
-
-     export const fetchSightings = async (signal) => {
-       const res = await fetch(
-         `https://api.jotform.com/form/${FORM_IDS.sighting}/submissions?apiKey=${API_KEY}`,
-         { signal }
-       );
-       const data = await res.json();
-       return mapJotformSubmissions(data.content, 'sighting');
-     };
-
-  3. fetchAllClues zaten Promise.all kullanıyor — değişiklik gerekmez.
-*/
