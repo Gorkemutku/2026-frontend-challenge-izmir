@@ -170,5 +170,11 @@ export const mapJotformSubmission = (submission, formType) => {
 export const mapJotformSubmissions = (submissions, formType) => {
   return (submissions || [])
     .map((sub) => mapJotformSubmission(sub, formType))
-    .filter(clue => clue.description || clue.locationName || clue.timestamp);
+    .filter(clue => {
+      // Tamamen boş kayıtları ele
+      if (!clue.description && !clue.locationName && !clue.timestamp) return false;
+      // Jotform'daki 'dd', '11', 'ss' gibi anlamsız test kayıtlarını filtrele
+      if (clue.locationName === 'dd' || clue.description === '11' || clue.locationName?.toLowerCase() === 'test') return false;
+      return true;
+    });
 };
