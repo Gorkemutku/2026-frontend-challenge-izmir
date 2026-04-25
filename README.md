@@ -1,5 +1,11 @@
-# 🐾 Podo Dedektif Paneli (Jotform İzmir Hackathon)
+# 🐾 Podo Dedektif Paneli (Jotform Frontend Challenge 2026 - İzmir)
 
+## 👤 Katılımcı Bilgileri (User Information)
+- **İsim Soyisim (Name):** Görkem Utku Tatar
+
+---
+
+## 🕵️‍♂️ Proje Açıklaması (Project Description)
 Bu proje, Jotform Frontend Hackathon İzmir için geliştirilmiş interaktif bir dedektif panosudur. Kayıp maskot Podo'yu bulmak amacıyla 5 farklı canlı Jotform'dan gelen gerçek verileri çeker, analiz eder, birleştirir ve görselleştirir.
 
 ## Özellikler
