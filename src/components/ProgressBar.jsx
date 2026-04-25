@@ -57,7 +57,7 @@ const ProgressBar = ({ stats }) => {
         </div>
         <div className="flex items-center gap-1.5">
           <span className="text-neon-red">❓</span>
-          <span className="text-gray-400">Kayıp:</span>
+          <span className="text-gray-400">Çözülmemiş İpucu:</span>
           <span className="text-neon-red font-bold">{total - solved}</span>
         </div>
       </div>
