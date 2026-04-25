@@ -24,10 +24,40 @@ Proje süresi ve gereksinimleri doğrultusunda alınan mimari kararlar:
 4. **Gerçek Zamanlı Süre Yönetimi:**
    Jotform'a eklenen verilerdeki "gelecek zaman" veya kurgusal saat çatışmalarını engellemek için, verinin formda doldurulduğu metin yerine Jotform sunucusuna düştüğü orijinal `created_at` logları kullanılmıştır. Böylece son görülme süreleri ("10 dk önce", "2 gün önce") her zaman kusursuz çalışır.
 
-## Kurulum
+## 🛠️ Kullanılan Teknolojiler ve Kütüphaneler
+
+Projenin bilgisayarınızda sorunsuz çalışması için `package.json` dosyasına tüm gereksinimler tanımlanmıştır. Proje ayağa kalktığında şu kütüphaneler otomatik olarak yüklenecektir:
+
+- **React 19 & Vite 8:** Yüksek performanslı render ve ultra hızlı derleme altyapısı.
+- **TailwindCSS v4:** Utility-first yaklaşımıyla özel tasarımlar ve neon/glassmorphism efektleri.
+- **Fuse.js:** Dedektif arama motoru için güçlü ve hataya toleranslı (fuzzy) metin arama kütüphanesi.
+- **React Leaflet / Leaflet:** İpuçlarının görselleştirildiği konum haritası (kapsam dahilinde).
+
+## 🚀 Jüri İçin Kurulum Rehberi (Adım Adım)
+
+Projeyi kendi bilgisayarınızda klonlayıp çalıştırmak için aşağıdaki adımları sırasıyla terminalinize (komut satırına) yapıştırın:
+
+**1. Projeyi Klonlayın**
+Öncelikle projeyi GitHub'dan bilgisayarınıza indirin:
+```bash
+git clone https://github.com/Gorkemutku/2026-frontend-challenge-izmir.git
+```
+
+**2. Proje Klasörüne Girin**
+```bash
+cd 2026-frontend-challenge-izmir
+```
+
+**3. Gerekli Paketleri Yükleyin**
+Bu komut, projenin çalışması için gereken Tailwind, Fuse.js, React ve diğer tüm bağımlılıkları otomatik olarak kuracaktır:
 ```bash
 npm install
+```
+
+**4. Projeyi Çalıştırın**
+Kurulum tamamlandıktan sonra yerel sunucuyu başlatmak için:
+```bash
 npm run dev
 ```
 
-> **Not:** React 19 ve Vite 8 altyapısı kullanılmıştır. Node.js'in güncel (v18+) bir sürümünü kullandığınızdan emin olun.
+Terminalde beliren yerel adrese (Genellikle `http://localhost:5173/`) tıklayarak Podo Dedektif Paneli'ne giriş yapabilirsiniz. Keyifli incelemeler! 🐾
