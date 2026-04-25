@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+/* ===== Podo Detective Panel — Design Tokens ===== */
+@theme {
+  --color-midnight: #0a0e17;
+  --color-panel: #111827;
+  --color-panel-light: #1f2937;
+  --color-panel-glass: rgba(17, 24, 39, 0.7);
+  --color-border: rgba(75, 85, 99, 0.4);
+  --color-border-glow: rgba(56, 189, 248, 0.3);
+
+  /* Neon accent palette */
+  --color-neon-cyan: #38bdf8;
+  --color-neon-green: #34d399;
+  --color-neon-orange: #fb923c;
+  --color-neon-red: #f87171;
+  --color-neon-purple: #a78bfa;
+  --color-neon-yellow: #fbbf24;
+
+  /* Clue type colors */
+  --color-checkin: #34d399;
+  --color-message: #38bdf8;
+  --color-sighting: #fb923c;
+  --color-note: #a78bfa;
+  --color-tip: #f87171;
+
+  /* Confidence colors */
+  --color-confidence-high: #34d399;
+  --color-confidence-medium: #fbbf24;
+  --color-confidence-low: #f87171;
+
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+/* ===== Global Styles ===== */
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-midnight);
+    color: #e5e7eb;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-midnight);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-neon-cyan);
+  }
+}
+
+/* ===== Glassmorphism Utilities ===== */
+@utility glass-panel {
+  background: var(--color-panel-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+}
+
+@utility glass-card {
+  background: rgba(17, 24, 39, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+@utility glass-card-hover {
+  border-color: var(--color-border-glow);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
+  transform: translateY(-2px);
+}
+
+/* ===== Neon Glow Effects ===== */
+@utility neon-text {
+  text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+}
+
+@utility neon-border {
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3), inset 0 0 10px rgba(56, 189, 248, 0.1);
+}
+
+/* ===== Animations ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+  }
+}
+
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+@utility animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@utility animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
