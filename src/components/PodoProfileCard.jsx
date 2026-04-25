@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import podoAvatar from '../assets/podo-avatar.png';
 
 const PodoProfileCard = ({ stats }) => {
   const timeSinceLastSeen = useMemo(() => {
@@ -16,8 +17,8 @@ const PodoProfileCard = ({ stats }) => {
     <div className="glass-card p-4 mb-4" id="podo-profile-card">
       {/* Avatar & İsim */}
       <div className="flex items-center gap-3 mb-4">
-        <div className="podo-avatar">
-          <span className="text-4xl">🐾</span>
+        <div className="podo-avatar p-0.5">
+          <img src={podoAvatar} alt="Podo Avatar" className="w-full h-full object-cover rounded-full" />
         </div>
         <div>
           <h2 className="text-lg font-bold text-neon-cyan font-mono">PODO</h2>
