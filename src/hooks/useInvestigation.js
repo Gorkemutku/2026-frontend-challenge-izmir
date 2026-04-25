@@ -96,7 +96,13 @@ const lookupPerson = (rawName) => {
     }
   }
   
-  return null;
+  // 6) Eğer listede yoksa, dinamik olarak yeni kişi oluştur (Hackathon esnekliği)
+  const capitalizeWords = (s) => s.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+  return {
+    canonicalName: capitalizeWords(cleanedLower),
+    personId: `dyn_${cleanedNoRepeat.replace(/[^a-z0-9]/g, '_')}`,
+    role: 'Tanık/Şüpheli'
+  };
 };
 
 /**
