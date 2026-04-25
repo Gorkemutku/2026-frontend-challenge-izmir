@@ -1,28 +1,28 @@
 # 🐾 Podo Dedektif Paneli (Jotform İzmir Hackathon)
 
-Bu proje, Jotform Frontend Hackathon İzmir için geliştirilmiş interaktif bir dedektif panosudur. Kayıp maskot Podo'yu bulmak amacıyla 5 farklı formdan gelen verileri analiz eder, birleştirir ve görselleştirir.
+Bu proje, Jotform Frontend Hackathon İzmir için geliştirilmiş interaktif bir dedektif panosudur. Kayıp maskot Podo'yu bulmak amacıyla 5 farklı canlı Jotform'dan gelen gerçek verileri çeker, analiz eder, birleştirir ve görselleştirir.
 
 ## Özellikler
-- 📡 **Paralel Veri Çekme:** 5 farklı Jotform (simülasyon) ucundan veriler `Promise.all` ile eşzamanlı çekilir.
-- 🧹 **Agresif İsim Normalizasyonu:** Kullanıcı hataları (örn. "Alicann" -> "Alican", "Ayca" -> "Ayça") merkezi bir kayıt defteri (`personRegistry`) yardımıyla temizlenir.
-- 🔍 **Fuzzy Search:** `Fuse.js` ile bulanık arama, harf hatalarını tolere ederek sonuç bulur.
-- 🗺️ **Çapraz Sorgulama (Cross-referencing):** Farklı formlardaki ipuçları (aynı mekan, aynı kişi, 30 dk içindeki olaylar) otomatik olarak ilişkilendirilir.
+- 📡 **Canlı API Entegrasyonu:** Gerçek Jotform API'sinden 5 farklı form (Girişler, Mesajlar, Görüşler, Kişisel Notlar, Anonim İpuçları) `Promise.all` ile eşzamanlı çekilir.
+- 🧹 **Dinamik Veri Algısı ve İsim Normalizasyonu:** Kullanıcı hataları (örn. "Alicann" -> "Alican", "Ayca" -> "Ayça") regex ve algoritmalarla temizlenir. Sistemde kayıtlı olmayan yeni isimler ve konumlar otomatik olarak algılanıp dinamik olarak ağa eklenir. Test/Spam (örn: "dd", "11") amaçlı boş veriler otomatik ayıklanır.
+- 🔍 **Fuzzy Search:** `Fuse.js` ile bulanık arama; harf hatalarını ve eksik yazımları tolere ederek sonuç bulur.
+- 🗺️ **Çapraz Sorgulama (Cross-referencing):** Farklı formlardaki ipuçları (aynı mekan, aynı kişi, 30 dk içindeki olaylar) otomatik olarak kırmızı iplerle birbirine ilişkilendirilir.
 - 🎨 **Modern Tasarım:** Glassmorphism ve neon konseptli dedektif teması (TailwindCSS v4 + Vanilla CSS hybrid).
 
-## Teknik Ödünleşimler (Trade-offs)
+## Teknik Kararlar ve Ödünleşimler (Trade-offs)
 Proje süresi ve gereksinimleri doğrultusunda alınan mimari kararlar:
 
-1. **Mock Data Kullanımı:** 
-   Gerçek Jotform API anahtarları verilmediği için `src/data/mockData.js` üzerinde 5 formu simüle eden bir yapı kuruldu. Ancak `src/services/api.js` gerçek API'ye geçiş yapılacak şekilde (Jotform submission mapping logic dahil) kurgulandı.
+1. **Tamamen Gerçek Zamanlı (Live) Veri Altyapısı:** 
+   Proje başlangıcında kurgulanan sahte veriler (mockData) tamamen silinmiş, mimari doğrudan gerçek Jotform API Endpoint'lerinden beslenecek şekilde `src/services/api.js` üzerinde yapılandırılmıştır. Tüm paneller ve harita, API'den gelen dinamik verilere göre anlık şekillenir.
    
-2. **Harita (Map) Yaklaşımı:** 
-   Gerçek bir koordinat sistemi (Google Maps / Leaflet vb.) yerine hackathon konseptine uygun olarak grid-tabanlı bir ofis/kampüs haritası simülasyonu yapıldı. Bu, UI/UX açısından daha estetik ve yönetilebilir bir alan sağladı.
+2. **Dinamik Harita (Map) Yaklaşımı:** 
+   Harita bileşeni Jotform'dan gelen konum isimlerini dinamik olarak okur. Gerçek bir koordinat sistemi (Google Maps vb.) yerine hackathon konseptine uygun estetik bir grid-tabanlı konum haritası simülasyonu yapılmıştır.
 
-3. **İsim Normalizasyonu - Neden Backend Değil?** 
-   Normalde bu tarz veri temizleme işleri backend'de yapılır. Ancak bu frontend hackathonu olduğu için algoritma `useInvestigation` hook'u içinde regex ve ASCII mapping kuralları ile tamamen istemci (client) tarafında çözüldü.
+3. **Veri Temizleme - Neden Backend Değil?** 
+   Normalde bu tarz veri temizleme işleri backend'de yapılır. Ancak bu frontend hackathonu olduğu için logik `useInvestigation` hook'u içinde tamamen istemci (client) tarafında çözülmüş ve frontend'in gücü vurgulanmıştır.
    
-4. **CSS Hibrit Yapısı:**
-   Ana iskelet ve layout için TailwindCSS v4, karmaşık animasyonlar (scan line, neon glow, shimmer) ve spesifik bileşenler (.glass-card, .podo-avatar) için `index.css` ve `App.css` tercih edildi.
+4. **Gerçek Zamanlı Süre Yönetimi:**
+   Jotform'a eklenen verilerdeki "gelecek zaman" veya kurgusal saat çatışmalarını engellemek için, verinin formda doldurulduğu metin yerine Jotform sunucusuna düştüğü orijinal `created_at` logları kullanılmıştır. Böylece son görülme süreleri ("10 dk önce", "2 gün önce") her zaman kusursuz çalışır.
 
 ## Kurulum
 ```bash
