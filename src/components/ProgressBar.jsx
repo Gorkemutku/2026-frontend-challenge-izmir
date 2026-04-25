@@ -48,11 +48,11 @@ const ProgressBar = ({ stats }) => {
         ))}
       </div>
 
-      {/* Bulunan vs Kayıp */}
+      {/* Çözülen vs Çözülmemiş */}
       <div className="mt-3 pt-3 border-t border-gray-700/50 flex items-center justify-between text-xs font-mono">
         <div className="flex items-center gap-1.5">
           <span className="text-neon-green">✅</span>
-          <span className="text-gray-400">Çözülen:</span>
+          <span className="text-gray-400">Çözülen İpucu:</span>
           <span className="text-neon-green font-bold">{solved}</span>
         </div>
         <div className="flex items-center gap-1.5">
