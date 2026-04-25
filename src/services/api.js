@@ -143,19 +143,9 @@ export const mapJotformSubmission = (submission, formType) => {
     mapped.description = `Yanında: ${mapped.seenWith}`;
   }
 
-  // Tarih Parse Etme ("14-05-2026 18:07" -> ISO Format)
-  if (mapped.timestamp && typeof mapped.timestamp === 'string' && mapped.timestamp.includes('-')) {
-    const [datePart, timePart] = mapped.timestamp.split(' ');
-    if (datePart && timePart) {
-      const [dd, mm, yyyy] = datePart.split('-');
-      if (dd && mm && yyyy) {
-        mapped.timestamp = `${yyyy}-${mm}-${dd}T${timePart}:00+03:00`;
-      }
-    }
-  }
-
-  // Fallback: created_at -> timestamp
-  if (!mapped.timestamp && submission.created_at) {
+  // Tarihleri tamamen Jotform sunucusundaki asıl kayıt saatine (created_at) göre çekiyoruz
+  // Form içine manuel yazılan kurgusal (gelecek) tarihleri görmezden gelir.
+  if (submission.created_at) {
     mapped.timestamp = submission.created_at;
   }
   
