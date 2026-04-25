@@ -7,6 +7,9 @@ const PodoProfileCard = ({ stats }) => {
     const diff = Math.abs(Date.now() - stats.lastSighting._parsedTime.getTime());
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    
+    if (days > 0) return `${days} gün ${hours % 24} saat ${minutes % 60} dk önce`;
     if (hours > 0) return `${hours} saat ${minutes % 60} dk önce`;
     return `${minutes} dk önce`;
   }, [stats]);
