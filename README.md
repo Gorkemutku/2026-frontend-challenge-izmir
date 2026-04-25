@@ -33,31 +33,45 @@ Projenin bilgisayarınızda sorunsuz çalışması için `package.json` dosyası
 - **Fuse.js:** Dedektif arama motoru için güçlü ve hataya toleranslı (fuzzy) metin arama kütüphanesi.
 - **React Leaflet / Leaflet:** İpuçlarının görselleştirildiği konum haritası (kapsam dahilinde).
 
-## 🚀 Jüri İçin Kurulum Rehberi (Adım Adım)
+## 🚀 Jüri İçin Detaylı Kurulum Rehberi
 
-Projeyi kendi bilgisayarınızda klonlayıp çalıştırmak için aşağıdaki adımları sırasıyla terminalinize (komut satırına) yapıştırın:
+Projeyi kendi bilgisayarınızda (Mac, Windows veya Linux fark etmeksizin) sorunsuz bir şekilde çalıştırmak için aşağıdaki adımları sırasıyla uygulamanız yeterlidir.
 
-**1. Projeyi Klonlayın**
-Öncelikle projeyi GitHub'dan bilgisayarınıza indirin:
+### 📋 Ön Koşullar (Prerequisites)
+Projeyi çalıştırmadan önce bilgisayarınızda **Node.js**'in güncel bir sürümünün (v18 veya üzeri) yüklü olduğundan emin olun. Kurulu olup olmadığını terminale `node -v` yazarak kontrol edebilirsiniz.
+
+---
+
+### Adım 1: Projeyi Bilgisayarınıza İndirin (Clone)
+Terminalinizi (veya komut satırınızı) açın ve projenin kaynak kodlarını GitHub'dan bilgisayarınıza çekmek için şu komutu yapıştırıp *Enter*'a basın:
+
 ```bash
 git clone https://github.com/Gorkemutku/2026-frontend-challenge-izmir.git
 ```
+*(Bu komut, bulunduğunuz dizine projenin adıyla yeni bir klasör oluşturur ve tüm dosyaları içine indirir.)*
 
-**2. Proje Klasörüne Girin**
+### Adım 2: Proje Klasörünün İçine Girin
+Dosyalar indikten sonra, işlemlere proje klasörünün içinde devam etmemiz gerekiyor. Bunun için:
+
 ```bash
 cd 2026-frontend-challenge-izmir
 ```
 
-**3. Gerekli Paketleri Yükleyin**
-Bu komut, projenin çalışması için gereken Tailwind, Fuse.js, React ve diğer tüm bağımlılıkları otomatik olarak kuracaktır:
+### Adım 3: Gerekli Kütüphaneleri (Bağımlılıkları) Yükleyin
+Projemiz React, TailwindCSS ve Fuse.js gibi modern teknolojiler kullanmaktadır. Bu araçların bilgisayarınıza otomatik olarak inip kurulması için şu komutu çalıştırın:
+
 ```bash
 npm install
 ```
+*(Bu işlem internet hızınıza bağlı olarak birkaç saniye ile bir dakika arasında sürebilir. Lütfen tamamlanana kadar bekleyin.)*
 
-**4. Projeyi Çalıştırın**
-Kurulum tamamlandıktan sonra yerel sunucuyu başlatmak için:
+### Adım 4: Projeyi Başlatın (Geliştirici Sunucusu)
+Her şey kuruldu! Artık projeyi ayağa kaldırmak için tek yapmanız gereken:
+
 ```bash
 npm run dev
 ```
 
-Terminalde beliren yerel adrese (Genellikle `http://localhost:5173/`) tıklayarak Podo Dedektif Paneli'ne giriş yapabilirsiniz. Keyifli incelemeler! 🐾
+Bu komutu çalıştırdığınızda terminalinizde `http://localhost:5173/` (veya benzeri) bir link belirecektir. Bu linke tıklayarak (Mac için `Cmd + Click`, Windows için `Ctrl + Click`) veya tarayıcınıza kopyalayarak **Podo Dedektif Paneli**'ne anında giriş yapabilirsiniz. 
+
+🕵️‍♂️ **Keyifli incelemeler ve iyi eğlenceler!** 🐾
