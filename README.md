@@ -18,16 +18,34 @@ Proje süresi ve gereksinimleri doğrultusunda alınan mimari kararlar:
 2. **Dinamik Harita (Map) Yaklaşımı:** 
    Harita bileşeni Jotform'dan gelen konum isimlerini dinamik olarak okur. Gerçek bir koordinat sistemi (Google Maps vb.) yerine hackathon konseptine uygun estetik bir grid-tabanlı konum haritası simülasyonu yapılmıştır.
 
-3. **Veri Temizleme 
+3. **Veri Temizleme - Neden Backend Değil?** 
    Normalde bu tarz veri temizleme işleri backend'de yapılır. Ancak bu frontend hackathonu olduğu için logik `useInvestigation` hook'u içinde tamamen istemci (client) tarafında çözülmüş ve frontend'in gücü vurgulanmıştır.
    
 4. **Gerçek Zamanlı Süre Yönetimi:**
    Jotform'a eklenen verilerdeki "gelecek zaman" veya kurgusal saat çatışmalarını engellemek için, verinin formda doldurulduğu metin yerine Jotform sunucusuna düştüğü orijinal `created_at` logları kullanılmıştır. Böylece son görülme süreleri ("10 dk önce", "2 gün önce") her zaman kusursuz çalışır.
 
-## Kurulum
+## 🛠️ Kullanılan Teknolojiler ve Mimari Kararlar
+
+Projede gereksiz bağımlılıklardan kaçınılarak hafif (lightweight) ve modern bir frontend altyapısı tercih edilmiştir.
+
+- **React 19 & Vite 8:** Yüksek performanslı render, modern React hook'ları ve ultra hızlı derleme altyapısı için kullanıldı.
+- **TailwindCSS v4:** Uygulamanın dedektif temalı neon ve glassmorphism (cam) tasarımlarını CSS dosyalarını şişirmeden utility-first yaklaşımıyla hızlıca inşa etmek için kullanıldı.
+- **Fuse.js:** Dedektif panosunda birbiriyle bağlantılı veriler arasında hataya toleranslı (fuzzy) arama yapabilmek için eklendi.
+
+### Neden Axios Yerine Native Fetch Tercih Edildi?
+Projede dışa bağımlılığı (bundle size) minimumda tutmak adına `axios` gibi ekstra bir kütüphane kullanılmamıştır. Veri çekme (data fetching) işlemleri sadece Jotform API'sine yönelik okuma (GET) ağırlıklı olduğu için modern tarayıcıların sunduğu yerleşik `fetch` API'si fazlasıyla yeterli görülmüştür. 
+
+Ayrıca network isteklerinin yönetimi özel bir `useInvestigation` hook'u içine soyutlanmış olup, bileşenlerin hızlıca unmount edilmesi durumunda ağ darboğazı (race conditions) ve hafıza sızıntılarını (memory leak) önlemek amacıyla native `AbortController` kullanılarak profesyonel bir istek iptal mekanizması kurulmuştur.
+
+---
+
+## 🚀 Kurulum
+
+Projeyi kendi bilgisayarınızda (Node.js v18+ yüklü olmalıdır) çalıştırmak için aşağıdaki komutları terminalinize sırasıyla girin:
+
 ```bash
+git clone https://github.com/Gorkemutku/2026-frontend-challenge-izmir.git
+cd 2026-frontend-challenge-izmir
 npm install
 npm run dev
 ```
-
-> **Not:** React 19 ve Vite 8 altyapısı kullanılmıştır. Node.js'in güncel (v18+) bir sürümünü kullandığınızdan emin olun.
